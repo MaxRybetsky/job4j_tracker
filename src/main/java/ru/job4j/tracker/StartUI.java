@@ -12,9 +12,7 @@ public class StartUI {
         while (run) {
             this.showMenu(userActions);
             int select = input.askInt("Select: ");
-            if (select >= 0 && select < userActions.length) {
-                run = userActions[select].execute(input, tracker);
-            }
+            run = userActions[select].execute(input, tracker);
         }
     }
 
