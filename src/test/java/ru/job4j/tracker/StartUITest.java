@@ -2,6 +2,8 @@ package ru.job4j.tracker;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
 
@@ -17,9 +19,9 @@ public class StartUITest {
                 new String[]{"0", "Item name", "1"}
         );
         Tracker tracker = new Tracker();
-        new StartUI(out).init(input, tracker, actions);
+        new StartUI(out).init(input, tracker, Arrays.asList(actions));
         assertThat(
-                tracker.findAll()[0].getName(),
+                tracker.findAll().get(0).getName(),
                 is("Item name")
         );
     }
@@ -37,7 +39,7 @@ public class StartUITest {
         Input input = new StubInput(
                 new String[]{"0", String.valueOf(item.getId()), replacedName, "1"}
         );
-        new StartUI(out).init(input, tracker, actions);
+        new StartUI(out).init(input, tracker, Arrays.asList(actions));
         assertThat(
                 tracker.findById(item.getId()).getName(),
                 is(replacedName)
@@ -56,7 +58,7 @@ public class StartUITest {
         Input input = new StubInput(
                 new String[]{"0", String.valueOf(item.getId()), "1"}
         );
-        new StartUI(out).init(input, tracker, actions);
+        new StartUI(out).init(input, tracker, Arrays.asList(actions));
         assertNull(
                 tracker.findById(item.getId())
         );
@@ -75,7 +77,7 @@ public class StartUITest {
                 new ShowAction(out),
                 new ExitAction()
         };
-        new StartUI(out).init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, Arrays.asList(actions));
         String ln = System.lineSeparator();
         String expected = "Menu" + ln
                 + "0. Show all items" + ln
@@ -104,7 +106,7 @@ public class StartUITest {
                 new FindByIdAction(out),
                 new ExitAction()
         };
-        new StartUI(out).init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, Arrays.asList(actions));
         String ln = System.lineSeparator();
         String expected = "Menu" + ln
                 + "0. Find item by Id" + ln
@@ -133,7 +135,7 @@ public class StartUITest {
                 new FindByNameAction(out),
                 new ExitAction()
         };
-        new StartUI(out).init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, Arrays.asList(actions));
         String ln = System.lineSeparator();
         String expected = "Menu" + ln
                 + "0. Find items by name" + ln
@@ -159,7 +161,7 @@ public class StartUITest {
         UserAction[] actions = {
                 new ExitAction()
         };
-        new StartUI(out).init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, Arrays.asList(actions));
         assertThat(
                 out.toString(),
                 is(
@@ -179,12 +181,12 @@ public class StartUITest {
         UserAction[] actions = {
                 new ExitAction()
         };
-        new StartUI(out).init(in, tracker, actions);
+        new StartUI(out).init(in, tracker, Arrays.asList(actions));
         assertThat(
                 out.toString(),
                 is(
                         String.format(
-                                          "Menu%n"
+                                "Menu%n"
                                         + "0. Exit Program%n"
                                         + "Wrong input, you can select: 0 .. 0%n"
                                         + "Menu%n"
@@ -197,7 +199,7 @@ public class StartUITest {
     public void whenCorrectInput() {
         Output out = new StubOutput();
         Input in = new StubInput(
-                new String[] {"5"}
+                new String[]{"5"}
         );
         ValidateInput input = new ValidateInput(out, in);
         int selected = input.askInt("Enter menu: ");
@@ -208,7 +210,7 @@ public class StartUITest {
     public void whenInvalidInput() {
         Output out = new StubOutput();
         Input in = new StubInput(
-                new String[] {"one", "1"}
+                new String[]{"one", "1"}
         );
         ValidateInput input = new ValidateInput(out, in);
         int selected = input.askInt("Enter menu: ");
@@ -219,7 +221,7 @@ public class StartUITest {
     public void whenInvalidInputThenTestOutput() {
         Output out = new StubOutput();
         Input in = new StubInput(
-                new String[] {"four", "4"}
+                new String[]{"four", "4"}
         );
         ValidateInput input = new ValidateInput(out, in);
         int selected = input.askInt("Enter menu: ");
