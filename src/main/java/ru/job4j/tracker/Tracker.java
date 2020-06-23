@@ -105,6 +105,13 @@ public class Tracker {
      * @return индекс искомого Item, если элемент с таким id есть в массиве, иначе -1
      */
     private int indexOf(int id) {
-        return items.indexOf(this.findById(id));
+        int index = 0;
+        for (Item item : items) {
+            if (item.getId() == id) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 }
