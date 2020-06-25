@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 
 public class JobTest {
     @Test
-    public void whenAscByPriority(){
+    public void whenAscByPriority() {
         List<Job> jobs = Arrays.asList(
                 new Job("Text1", 3),
                 new Job("Text1", 4),
@@ -32,7 +32,7 @@ public class JobTest {
     }
 
     @Test
-    public void whenAscByName(){
+    public void whenAscByName() {
         List<Job> jobs = Arrays.asList(
                 new Job("Text1", 3),
                 new Job("Text1", 4),
@@ -50,7 +50,7 @@ public class JobTest {
     }
 
     @Test
-    public void whenDescByPriority(){
+    public void whenDescByPriority() {
         List<Job> jobs = Arrays.asList(
                 new Job("Text1", 3),
                 new Job("Text1", 4),
@@ -69,7 +69,7 @@ public class JobTest {
     }
 
     @Test
-    public void whenDescByName(){
+    public void whenDescByName() {
         List<Job> jobs = Arrays.asList(
                 new Job("Text1", 3),
                 new Job("Text1", 4),
@@ -87,7 +87,7 @@ public class JobTest {
     }
 
     @Test
-    public void whenDescByNameAndAscByPriority(){
+    public void whenDescByNameAndAscByPriority() {
         List<Job> jobs = Arrays.asList(
                 new Job("Text1", 4),
                 new Job("Text1", 3),
@@ -107,7 +107,8 @@ public class JobTest {
 
     @Test
     public void whenComparatorByNameAndPriority() {
-        Comparator<Job> cmpNamePriority = new JobDescByName().thenComparing(new JobDescByPriority());
+        Comparator<Job> cmpNamePriority = new JobDescByName()
+                .thenComparing(new JobDescByPriority());
         int rsl = cmpNamePriority.compare(
                 new Job("Impl task", 0),
                 new Job("Fix bug", 1)
