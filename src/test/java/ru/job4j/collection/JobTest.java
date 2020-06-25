@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -112,5 +113,35 @@ public class JobTest {
                 new Job("Fix bug", 1)
         );
         assertThat(rsl, lessThan(0));
+    }
+
+    @Test
+    public void whenComparatorBySameNamesAndDifferentPrioritiesAsc() {
+        Comparator<Job> cmpNamePriority = new JobDescByName().thenComparing(new JobAscByPriority());
+        int rsl = cmpNamePriority.compare(
+                new Job("Impl task", 5),
+                new Job("Impl task", 1)
+        );
+        assertThat(rsl, greaterThan(0));
+    }
+
+    @Test
+    public void whenComparatorBySameNamesAndDiffPriorities() {
+        Comparator<Job> cmpNamePriority = new JobAscByName().thenComparing(new JobDescByPriority());
+        int rsl = cmpNamePriority.compare(
+                new Job("Impl task", 1),
+                new Job("Impl task", 2)
+        );
+        assertThat(rsl, greaterThan(0));
+    }
+
+    @Test
+    public void whenComparatorBySameNamesAndSamePriorities() {
+        Comparator<Job> cmpNamePriority = new JobAscByName().thenComparing(new JobDescByPriority());
+        int rsl = cmpNamePriority.compare(
+                new Job("Impl task", 95),
+                new Job("Impl task", 95)
+        );
+        assertThat(rsl, is(0));
     }
 }
