@@ -1,8 +1,10 @@
 package ru.job4j.lambda;
 
+import java.util.Objects;
+
 public class Attachment {
-    private String name;
-    private int size;
+    private final String name;
+    private final int size;
 
     public Attachment(String name, int size) {
         this.name = name;
@@ -23,5 +25,23 @@ public class Attachment {
                 + "name='" + name + '\''
                 + ", size=" + size
                 + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attachment that = (Attachment) o;
+        return size == that.size
+                && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, size);
     }
 }
