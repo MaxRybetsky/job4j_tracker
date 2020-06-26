@@ -12,12 +12,6 @@ public class DepDescComp implements Comparator<String> {
         if (result != 0) {
             return result;
         }
-        for (int i = 1; i < Math.min(strs1.length, strs2.length); i++) {
-            result = strs1[i].compareTo(strs2[i]);
-            if (result != 0) {
-                return result;
-            }
-        }
-        return  strs1.length - strs2.length;
+        return o1.compareTo(o2);
     }
 }
