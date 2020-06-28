@@ -10,7 +10,7 @@ public class ScopeInside {
             int num = i;
             int tempTotal = total;
             total = add(
-                    () -> tempTotal + num
+                    () -> tempTotal + number[num]
             );
         }
         System.out.println(total);
