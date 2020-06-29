@@ -17,6 +17,22 @@ public class Address {
         this.apartment = apartment;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public int getHome() {
+        return home;
+    }
+
+    public int getApartment() {
+        return apartment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -35,5 +51,15 @@ public class Address {
     @Override
     public int hashCode() {
         return Objects.hash(city, street, home, apartment);
+    }
+
+    @Override
+    public String toString() {
+        return "Address{"
+                + "city='" + city + '\''
+                + ", street='" + street + '\''
+                + ", home=" + home
+                + ", apartment=" + apartment
+                + '}';
     }
 }
