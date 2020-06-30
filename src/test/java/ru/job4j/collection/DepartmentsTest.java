@@ -12,7 +12,7 @@ public class DepartmentsTest {
     @Test
     public void whenMissed() {
         List<String> input = Arrays.asList("k1/sk1");
-        List<String> expect = Arrays.asList("k1", "k1/sk1");
+        List<String> expect = List.of("k1", "k1/sk1");
         List<String> result = Departments.fillGaps(input);
         Departments.sortAsc(result);
         assertThat(result, is(expect));
@@ -21,7 +21,7 @@ public class DepartmentsTest {
     @Test
     public void whenNonChange() {
         List<String> input = Arrays.asList("k1", "k1/sk1");
-        List<String> expect = Arrays.asList("k1", "k1/sk1");
+        List<String> expect = List.of("k1", "k1/sk1");
         List<String> result = Departments.fillGaps(input);
         Departments.sortAsc(result);
         assertThat(result, is(expect));
@@ -30,7 +30,7 @@ public class DepartmentsTest {
     @Test
     public void whenAscSorted() {
         List<String> input = Arrays.asList("k2", "k1", "k1/sk1", "k1/sk1/ssk1", "k2/sk1");
-        List<String> expect = Arrays.asList("k1", "k1/sk1", "k1/sk1/ssk1", "k2", "k2/sk1");
+        List<String> expect = List.of("k1", "k1/sk1", "k1/sk1/ssk1", "k2", "k2/sk1");
         Departments.sortAsc(input);
         assertThat(input, is(expect));
     }
@@ -38,7 +38,7 @@ public class DepartmentsTest {
     @Test
     public void whenDescSorted1() {
         List<String> input = Arrays.asList("k2", "k1", "k1/sk1", "k1/sk1/ssk1", "k2/sk1");
-        List<String> expect = Arrays.asList("k2", "k2/sk1", "k1", "k1/sk1", "k1/sk1/ssk1");
+        List<String> expect = List.of("k2", "k2/sk1", "k1", "k1/sk1", "k1/sk1/ssk1");
         Departments.sortDesc(input);
         assertThat(input, is(expect));
     }
@@ -46,7 +46,7 @@ public class DepartmentsTest {
     @Test
     public void whenDescSorted2() {
         List<String> input = Arrays.asList("k1", "k1/sk1", "k1/sk1/ssk1", "k2", "k2/sk1");
-        List<String> expect = Arrays.asList("k2", "k2/sk1", "k1", "k1/sk1", "k1/sk1/ssk1");
+        List<String> expect = List.of("k2", "k2/sk1", "k1", "k1/sk1", "k1/sk1/ssk1");
         Departments.sortDesc(input);
         assertThat(input, is(expect));
     }
