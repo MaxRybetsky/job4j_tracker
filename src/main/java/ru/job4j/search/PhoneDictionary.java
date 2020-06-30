@@ -25,8 +25,8 @@ public class PhoneDictionary {
                 || combineBySurname.test(person)
                 || combineByPhone.test(person)
                 || combineByAddress.test(person);
-        ArrayList<Person> result = new ArrayList<>();
-        for (Person person : persons) {
+        var result = new ArrayList<Person>();
+        for (var person : persons) {
             if (combine.test(person)) {
                 result.add(person);
             }
