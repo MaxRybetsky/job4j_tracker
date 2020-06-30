@@ -1,7 +1,6 @@
 package ru.job4j.bank;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BankService {
     private final Map<User, List<Account>> users = new HashMap<>();
@@ -11,7 +10,7 @@ public class BankService {
     }
 
     public void addAccount(String passport, Account account) {
-        User user = this.findByPassport(passport);
+        User user = this.findByPassport(passport).orElse(null);
         if (user != null) {
             List<Account> accounts = users.get(user);
             if (!accounts.contains(account)) {
@@ -20,29 +19,27 @@ public class BankService {
         }
     }
 
-    public User findByPassport(String passport) {
+    public Optional<User> findByPassport(String passport) {
         return users.keySet()
                 .stream()
                 .filter(user -> user.getPassport().equals(passport))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
-    public Account findByRequisite(String passport, String requisite) {
-        User user = this.findByPassport(passport);
+    public Optional<Account> findByRequisite(String passport, String requisite) {
+        User user = this.findByPassport(passport).orElse(null);
         return user != null
                 ? users.get(user)
                         .stream()
                         .filter(account -> account.getRequisite().equals(requisite))
                         .findFirst()
-                        .orElse(null)
-                : null;
+                : Optional.empty();
     }
 
     public boolean transferMoney(String srcPassport, String srcRequisite,
                                  String destPassport, String destRequisite, double amount) {
-        Account srcAccount = this.findByRequisite(srcPassport, srcRequisite);
-        Account destAccount = this.findByRequisite(destPassport, destRequisite);
+        Account srcAccount = this.findByRequisite(srcPassport, srcRequisite).orElse(null);
+        Account destAccount = this.findByRequisite(destPassport, destRequisite).orElse(null);
         if (srcAccount == null || srcAccount.getBalance() < amount || destAccount == null) {
             return false;
         }
