@@ -30,7 +30,7 @@ public class BankService {
 
     public Account findByRequisite(String passport, String requisite) {
         User user = this.findByPassport(passport);
-        return this.findByPassport(passport) != null
+        return user != null
                 ? users.get(user)
                         .stream()
                         .filter(account -> account.getRequisite().equals(requisite))
