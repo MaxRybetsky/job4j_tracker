@@ -9,7 +9,8 @@ public class ListToMap {
         return students.stream()
                 .collect(Collectors.toMap(
                         Student::getSurname,
-                        e -> e
+                        e -> e,
+                        (s, d) -> d
                 ));
     }
 }
