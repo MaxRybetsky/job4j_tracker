@@ -1,11 +1,9 @@
 package ru.job4j.tracker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
-public class Tracker {
+public class MemTracker implements Store {
     /**
      * Массив для хранения заявок.
      */
@@ -15,6 +13,10 @@ public class Tracker {
      * Переменная для обеспечения уникальности заявки
      */
     private int ids = 1;
+
+    @Override
+    public void init() {
+    }
 
     /**
      * Метод добавления заявки в хранилище
@@ -113,5 +115,9 @@ public class Tracker {
             index++;
         }
         return -1;
+    }
+
+    @Override
+    public void close() throws Exception {
     }
 }
