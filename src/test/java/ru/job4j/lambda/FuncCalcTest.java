@@ -26,7 +26,8 @@ public class FuncCalcTest {
     @Test
     public void whenQuadraticFunctionThenQuadraticResults() {
         List<Double> result = FuncCalc.diapason(0, 10, x -> Math.pow(2D, x));
-        List<Double> expected = Arrays.asList(1D, 2D, 4D, 8D, 16D, 32D, 64D, 128D, 256D, 512D, 1024D);
+        List<Double> expected = Arrays.asList(1D, 2D, 4D, 8D, 16D, 32D, 64D, 128D, 256D, 512D,
+                1024D);
         assertThat(result, is(expected));
     }
 }
