@@ -1,1 +1,0 @@
-alter table items add descr text;
