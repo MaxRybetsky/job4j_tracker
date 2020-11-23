@@ -88,10 +88,10 @@ public class SqlTracker implements Store {
     @Override
     public Item add(Item item) {
         if (cn != null) {
+            String query = "insert into " + tableName + " (name) values (?);";
             try (final PreparedStatement statement =
                          this.cn.prepareStatement(
-                                 "insert into " + tableName
-                                         + " (name) values (?)",
+                                 query,
                                  Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, item.getName());
                 statement.executeUpdate();
@@ -105,7 +105,7 @@ public class SqlTracker implements Store {
                 throw new IllegalStateException(ex);
             }
         }
-        throw new IllegalStateException("Could not create new user");
+        throw new IllegalStateException("Could not create a new user");
     }
 
     /**
@@ -119,13 +119,21 @@ public class SqlTracker implements Store {
      */
     @Override
     public boolean replace(int id, Item item) {
-        String query = "update "
-                + tableName
-                + " set name='"
-                + item.getName()
-                + "' where id="
-                + id + ";";
-        return editCommandsSender(query);
+        if (cn != null) {
+            String query = "update " + tableName + " set name=? where id=?;";
+            try (final PreparedStatement statement =
+                         this.cn.prepareStatement(query)) {
+                statement.setString(1, item.getName());
+                statement.setInt(2, id);
+                int res = statement.executeUpdate();
+                if (res != 0) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return false;
     }
 
     /**
@@ -137,10 +145,20 @@ public class SqlTracker implements Store {
      */
     @Override
     public boolean delete(int id) {
-        String query = "delete from "
-                + tableName
-                + " where id=" + id;
-        return editCommandsSender(query);
+        if (cn != null) {
+            String query = "delete from " + tableName + " where id=?";
+            try (final PreparedStatement statement =
+                         this.cn.prepareStatement(query)) {
+                statement.setInt(1, id);
+                int res = statement.executeUpdate();
+                if (res != 0) {
+                    return true;
+                }
+            } catch (SQLException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return false;
     }
 
     /**
@@ -150,8 +168,22 @@ public class SqlTracker implements Store {
      */
     @Override
     public List<Item> findAll() {
-        String query = "select * from " + tableName;
-        return getCommandsSender(query);
+        List<Item> result = new ArrayList<>();
+        if (cn != null && hasTable) {
+            String query = "select * from " + tableName;
+            try (PreparedStatement statement =
+                         this.cn.prepareStatement(query)) {
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    result.add(new Item(id, name));
+                }
+            } catch (SQLException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return result;
     }
 
     /**
@@ -164,9 +196,23 @@ public class SqlTracker implements Store {
      */
     @Override
     public List<Item> findByName(String key) {
-        String query = "select * from " + tableName
-                + " where name='" + key + "'";
-        return getCommandsSender(query);
+        List<Item> result = new ArrayList<>();
+        if (cn != null && hasTable) {
+            String query = "select * from " + tableName + " where name=?";
+            try (PreparedStatement statement =
+                         this.cn.prepareStatement(query)) {
+                statement.setString(1, key);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    result.add(new Item(id, name));
+                }
+            } catch (SQLException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return result;
     }
 
     /**
@@ -180,10 +226,21 @@ public class SqlTracker implements Store {
      */
     @Override
     public Item findById(int id) {
-        String query = "select * from " + tableName
-                + " where id=" + id;
-        List<Item> items = getCommandsSender(query);
-        return items.isEmpty() ? null : items.get(0);
+        if (cn != null && hasTable) {
+            String query = "select * from " + tableName + " where id=?";
+            try (PreparedStatement statement =
+                         this.cn.prepareStatement(query)) {
+                statement.setInt(1, id);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    return new Item(id, name);
+                }
+            } catch (SQLException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return null;
     }
 
     /**
@@ -211,61 +268,15 @@ public class SqlTracker implements Store {
     }
 
     /**
-     * Gets list of items that satisfy the query
-     * condition
-     *
-     * @param query To get info from data base
-     * @return List of Items
-     */
-    private List<Item> getCommandsSender(String query) {
-        List<Item> result = new ArrayList<>();
-        if (cn != null && hasTable) {
-            try (Statement stat = cn.createStatement()) {
-                ResultSet resultSet = stat.executeQuery(query);
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    result.add(new Item(id, name));
-                }
-            } catch (SQLException ex) {
-                throw new IllegalStateException(ex);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Edits (updates and deletes) info of items
-     * int storage with specify query
-     *
-     * @param query Edition task
-     * @return {@code true} if some info in storage was
-     * changed, otherwise - {@code false}
-     */
-    private boolean editCommandsSender(String query) {
-        if (cn != null) {
-            try (Statement stat = cn.createStatement()) {
-                int res = stat.executeUpdate(query);
-                if (res != 0) {
-                    return true;
-                }
-            } catch (SQLException ex) {
-                throw new IllegalStateException(ex);
-            }
-        }
-        return false;
-    }
-
-    /**
      * Checks if need to create new table in storage
      */
     private void createTable() {
         if (!hasTable) {
-            try (Statement stat = cn.createStatement()) {
-                String creating = "create table "
-                        + tableName
-                        + "(id serial primary key, name text);";
-                stat.executeUpdate(creating);
+            String query = "create table " + tableName
+                    + " (id serial primary key, name text);";
+            try (PreparedStatement statement =
+                         this.cn.prepareStatement(query)) {
+                statement.executeUpdate();
                 hasTable = true;
             } catch (SQLException ex) {
                 throw new IllegalStateException(ex);
